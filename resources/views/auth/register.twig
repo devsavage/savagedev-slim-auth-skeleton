@@ -1,0 +1,26 @@
+{% extends 'templates/default.twig' %}
+{% block content %}
+    <h1>Register</h1>
+    <ul>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" value="{{ old.username }}">
+            {% if errors.username %}
+                {{ errors.username.0 }}
+            {% endif %}
+            <input type="text" name="email" placeholder="E-Mail Address" value="{{ old.email }}">
+            {% if errors.email %}
+                {{ errors.email.0 }}
+            {% endif %}
+            <input type="password" name="password" placeholder="Password">
+            {% if errors.password %}
+                {{ errors.password.0 }}
+            {% endif %}
+            <input type="password" name="confirm_password" placeholder="Confirm Password">
+            {% if errors.confirm_password %}
+                {{ errors.confirm_password.0 }}
+            {% endif %}
+            <button type="submit">Register</button>
+        </form>
+       Already have an account? <a href="{{ path_for("auth.login") }}">Login</a>
+    </ul>
+{% endblock %}

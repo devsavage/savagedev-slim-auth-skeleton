@@ -1,0 +1,17 @@
+<?php
+namespace DummyNamespace;
+
+use SavageDev\Http\Controllers\Controller;
+
+class DummyClass extends Controller
+{
+    public function get()
+    {
+        //
+    }
+    
+    public function post()
+    {
+        //
+    }
+}

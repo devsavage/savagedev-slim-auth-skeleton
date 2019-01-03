@@ -1,0 +1,17 @@
+{% extends 'templates/default.twig' %}
+{% block content %}
+    <h1>Profile</h1>
+    <ul>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" value="{{ auth.user.username }}">
+            {% if errors.username %}
+                {{ errors.username.0 }}
+            {% endif %}
+            <input type="text" name="email" placeholder="E-Mail" value="{{ auth.user.email }}">
+                        {% if errors.email %}
+                {{ errors.email.0 }}
+            {% endif %}
+            <button type="submit">Update</button>
+        </form>
+    </ul>
+{% endblock %}
