@@ -3,6 +3,9 @@
 {% if auth.check %}
     <p>Welcome, <b>{{ auth.user.username }}</b></p> 
     <li><a href="{{ path_for("auth.profile") }}">Profile</a></li>
+    <ul>
+        <li><a href="{{ path_for("auth.password") }}">Password</a></li>
+    </ul>
     <li><a href="{{ path_for("auth.logout") }}">Logout</a></li>
 
 {% else %}

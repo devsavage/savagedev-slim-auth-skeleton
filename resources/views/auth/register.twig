@@ -19,6 +19,7 @@
             {% if errors.confirm_password %}
                 {{ errors.confirm_password.0 }}
             {% endif %}
+            {{ csrf.field | raw }}
             <button type="submit">Register</button>
         </form>
        Already have an account? <a href="{{ path_for("auth.login") }}">Login</a>

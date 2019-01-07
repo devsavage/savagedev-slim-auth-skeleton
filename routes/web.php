@@ -3,6 +3,7 @@ use SavageDev\Http\Controllers\HomeController;
 
 use SavageDev\Http\Controllers\Auth\AccountController;
 use SavageDev\Http\Controllers\Auth\LoginController;
+use SavageDev\Http\Controllers\Auth\PasswordController;
 use SavageDev\Http\Controllers\Auth\RegisterController;
 
 use SavageDev\Lib\Session;
@@ -16,6 +17,9 @@ $app->group("/auth", function() {
     $this->route(["GET", "POST"], "/profile", AccountController::class)
         ->add(new AuthMiddleware($this->getContainer()))
         ->setName("auth.profile");
+    $this->route(["GET", "POST"], "/password", PasswordController::class)
+        ->add(new AuthMiddleware($this->getContainer()))
+        ->setName("auth.password");
 
     $this->route(["GET", "POST"], "/login", LoginController::class)
         ->add(new GuestMiddleware($this->getContainer()))

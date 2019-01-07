@@ -11,6 +11,7 @@
                         {% if errors.email %}
                 {{ errors.email.0 }}
             {% endif %}
+            {{ csrf.field | raw }}
             <button type="submit">Update</button>
         </form>
     </ul>

@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+@import 'variables';
+
+@import '~bootstrap/scss/bootstrap';
+
+.navbar-custom {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.btn-twitch {
+    @include button-variant(#6441A4, #6441A4);
+}
+
+.btn-outline-twitch {
+    @include button-outline-variant(#6441A4);
+}
