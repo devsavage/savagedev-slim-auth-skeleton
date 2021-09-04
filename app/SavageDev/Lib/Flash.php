@@ -5,22 +5,25 @@ use Slim\Flash\Messages;
 
 class Flash extends Messages
 {
-    protected $forNow = [];
+    protected $_forNow = [];
 
     public function addMessageNow($key, $message)
     {
-        if(!isset($this->forNow[$key])) {
-            $this->forNow[$key] = [];
+        if(!isset($this->_forNow[$key])) {
+            $this->_forNow[$key] = [];
         }
 
-        $this->forNow[$key][] = $message;
+        $this->_forNow[$key][] = $message;
     }
 
     public function getMessages()
     {
+        /**
+         * @var string|array
+         */
         $messages = $this->fromPrevious;
 
-        foreach($this->forNow as $key => $values) {
+        foreach($this->_forNow as $key => $values) {
             if(!isset($messages[$key])){
                 $messages[$key] = [];
             }

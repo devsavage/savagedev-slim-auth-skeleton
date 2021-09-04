@@ -6,9 +6,9 @@ use Respect\Validation\Exceptions\ValidationException;
 
 class MatchesCurrentPasswordException extends ValidationException
 {
-    public static $defaultTemplates = [
+    protected $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => 'Password does not match your current password.',
+            self::STANDARD => "Password does not match your current password.",
         ]
     ];
 }

@@ -1,7 +1,7 @@
 <?php
 namespace SavageDev\Console;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,11 +62,15 @@ abstract class Command extends SymfonyCommand
 
     protected function info($value)
     {
-        return $this->output->writeln('<info>' . $value . '</info>');
+        $this->output->writeln("<info>" . $value . "</info>");
+
+        return SymfonyCommand::SUCCESS;
     }
 
     protected function error($value)
     {
-        return $this->output->writeln('<error>' . $value . '</error>');
+        $this->output->writeln("<error>" . $value . "</error>");
+
+        return SymfonyCommand::FAILURE;
     }
 }

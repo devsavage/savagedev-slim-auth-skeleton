@@ -1,13 +1,30 @@
 <?php
 namespace DummyNamespace;
 
-use SavageDev\Http\Middleware\Middleware;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class DummyClass extends Middleware
+use SavageDev\Lib\Session;
+
+use Slim\Interfaces\RouteParserInterface;
+use Slim\Psr7\Response;
+
+class DummyClass implements MiddlewareInterface
 {
-    public function __invoke($request, $response, $next)
+    protected $_container;
+    protected $_router;
+    
+    public function __construct(ContainerInterface $container)
     {
-        $response = $next($request, $response);
-        return $response;
+        $this->_container = $container;
+        $this->_router = $container->get(RouteParserInterface::class);
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        return $handler->handle($request);
     }
 }

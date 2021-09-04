@@ -14,7 +14,7 @@ class Matches extends AbstractRule
         $this->identifier = $identifier;
     }
 
-    public function validate($input)
+    public function validate($input) : bool
     {
         return $input === $this->comparison;
     }

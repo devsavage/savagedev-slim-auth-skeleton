@@ -4,12 +4,12 @@
     <ul>
         <form method="POST">
             <input type="text" name="username" placeholder="Username" value="{{ auth.user.username }}">
-            {% if errors.username %}
-                {{ errors.username.0 }}
+            {% if flash.getMessage("errors").0.username %}
+                {{ flash.getMessage("errors").0.username }}
             {% endif %}
             <input type="text" name="email" placeholder="E-Mail" value="{{ auth.user.email }}">
-                        {% if errors.email %}
-                {{ errors.email.0 }}
+            {% if flash.getMessage("errors").0.email %}
+                {{ flash.getMessage("errors").0.email }}
             {% endif %}
             {{ csrf.field | raw }}
             <button type="submit">Update</button>

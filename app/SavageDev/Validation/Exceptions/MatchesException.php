@@ -6,9 +6,9 @@ use Respect\Validation\Exceptions\ValidationException;
 
 class MatchesException extends ValidationException
 {
-    public static $defaultTemplates = [
+    protected $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => '{{name}} does not match {{identifier}}.',
+            self::STANDARD => "{{name}} does not match {{identifier}}.",
         ]
     ];
 }

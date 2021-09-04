@@ -1,34 +1,63 @@
 <?php
 session_start();
 
-use Dotenv\Dotenv;
+use DI\ContainerBuilder;
+use DI\Bridge\Slim\Bridge;
 
-use SavageDev\App;
+use Respect\Validation\Factory;
 
-use SavageDev\Http\Middleware\CsrfMiddleware;
-use SavageDev\Http\Middleware\OldInputMiddleware;
+use SavageDev\Lib\Factory\LoggerFactory;
+use SavageDev\Http\Handlers\HttpErrorsHandler;
 
-use Slim\Container;
+use Slim\Csrf\Guard;
+use Slim\Views\TwigMiddleware;
 
 define("INC_ROOT", __DIR__);
 
 require INC_ROOT . "/../vendor/autoload.php";
 
 if(file_exists(INC_ROOT . "/../.env")) {
-    $env = new Dotenv(INC_ROOT . "/../");
-    $env->load();
+    $dotenv = \Dotenv\Dotenv::createImmutable(INC_ROOT . "/../");
+    $dotenv->load();
 }
 
-$app = new App(new Container(
-    include INC_ROOT . "/container.php"
-));
+Factory::setDefaultInstance(
+    (new Factory())
+        ->withRuleNamespace("SavageDev\\Validation\\Rules")
+        ->withExceptionNamespace("SavageDev\\Validation\\Exceptions")
+);
 
-$container = $app->getContainer();
+$builder = new ContainerBuilder();
 
-$container->db->bootEloquent();
+$production = require INC_ROOT . "/../bootstrap/production.php";
+$production($builder);
 
-$app->add(OldInputMiddleware::class);
-$app->add(CsrfMiddleware::class);
-$app->add($container->csrf);
+$container = $builder->build();
 
-require INC_ROOT . "/../routes/web.php";
+$settings = $container->get("settings");
+
+$app = Bridge::create($container);
+$app->setBasePath($settings["base_path"]);
+
+$responseFactory = $app->getResponseFactory();
+$container->set(\Psr\Http\Message\ResponseFactoryInterface::class, $responseFactory);
+
+$container->get("database")->bootEloquent();
+
+$app->add($container->get("csrf"));
+
+$app->addBodyParsingMiddleware();
+
+$app->addRoutingMiddleware();
+
+$routeParser = $app->getRouteCollector()->getRouteParser();
+$container->set(Slim\Interfaces\RouteParserInterface::class, $routeParser);
+
+$app->add(TwigMiddleware::createFromContainer($app));
+$app->addMiddleware(new \SavageDev\Http\Middleware\OldInputMiddleware($container));
+
+$errorMiddleware = $app->addErrorMiddleware(true, true, true, $container->get("logger"));
+$errorMiddleware->setDefaultErrorHandler(new HttpErrorsHandler($container));
+
+$webRoutes = require INC_ROOT . "/../routes/web.php";
+$webRoutes($app);

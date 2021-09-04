@@ -8,6 +8,6 @@
             {{ csrf.field | raw }}
             <button type="submit">Login</button>
         </form>
-        Don't have an account? <a href="{{ path_for("auth.register") }}">Register</a>
+        Don't have an account? <a href="{{ url_for("auth.register") }}">Register</a>
     </ul>
 {% endblock %}

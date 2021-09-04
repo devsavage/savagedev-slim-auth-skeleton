@@ -1,50 +1,65 @@
 <?php
 namespace SavageDev\Http\Controllers;
 
+use SavageDev\Lib\Session;
+use Psr\Container\ContainerInterface;
+use Slim\Interfaces\RouteParserInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+
 class Controller
 {
-    protected $_request;
-    protected $_response;
-    protected $_args;
+    protected $_view;
+    protected $_router;
     protected $_container;
 
-    public function __construct($request, $response, $args, $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->_request = $request;
-        $this->_response = $response;
-        $this->_args = $args;
+        $this->_view = $container->get("view");
+        $this->_router = $container->get(RouteParserInterface::class);
         $this->_container = $container;
     }
 
     public function __get($property)
     {
-        if ($this->_container->{$property}) {
-            return $this->_container->{$property};
+        if ($this->_container->has($property)) {
+            return $this->_container->get($property);
         }
     }
     
-    public function flash($type, $message)
+    public function flash($type, $message, $now = false) 
     {
+        if($now) {
+            return $this->flash->addMessageNow($type, $message);
+        }
+        
         return $this->flash->addMessage($type, $message);
     }
 
-    public function flashNow($type, $message)
+    public function param($request, $name)
     {
-        return $this->flash->addMessageNow($type, $message);
+        if($request->getMethod() == "GET") {
+            return $request->getQueryParams()[$name];
+        }
+        
+        return $request->getParsedBody()[$name];
     }
 
-    public function param($name)
+    protected function render(Response $response, string $template, array $params = []): Response
     {
-        return $this->_request->getParam($name);
+        return $this->_view->render($response, $template . ".twig", $params);
     }
 
-    public function render($name, array $args = [])
+    protected function redirect(Response $response, $to, $data = [], $params = [], $query = null): Response
     {
-        return $this->_container->view->render($this->_response, $name . ".twig", $args);
+        if($query) {
+            return $response->withHeader("Location", $this->makeUri($this->_router->urlFor($to, $data, $params) . $query));
+        }
+
+        return $response->withHeader("Location", $this->makeUri($this->_router->urlFor($to, $data, $params)));
     }
 
-    public function redirect($path = null, $args = [], $params = [])
+    protected function makeUri($uri)
     {
-        return $this->response->withRedirect($this->router->pathFor($path, $args, $params));
+        return env("APP_URL") . $uri;
     }
 }

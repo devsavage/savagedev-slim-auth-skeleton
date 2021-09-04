@@ -15,7 +15,7 @@ class Cookie
 
     public static function set($name, $value, $expiry, $secure = false)
     {
-        if(setcookie($name, $value, $expiry, '/', null, $secure, true)) {
+        if(setcookie($name, $value, $expiry, "/", null, $secure, true)) {
             return true;
         }
 
@@ -24,6 +24,6 @@ class Cookie
 
     public static function destroy($name)
     {
-        self::set($name, '', time() - 1);
+        self::set($name, "", time() - 1);
     }
 }

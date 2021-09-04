@@ -3,6 +3,8 @@ namespace SavageDev\Validation;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 
+use SavageDev\Lib\Session;
+
 class Validator
 {
     protected $errors = [];
@@ -11,13 +13,15 @@ class Validator
     {
         foreach ($rules as $field => $rule) {
             try {
-                $rule->setName(ucfirst($field))->assert($request->getParam($field));
+                $rule->setName(ucfirst($field))->assert($request->getParsedBody()[$field]);
             } catch (NestedValidationException $e) {
-                $this->errors[$field] = $e->getMessages();
+                foreach($e->getIterator() as $message) {
+                    $this->errors[$field] = $message->getMessage();
+                }
             }
         }
         
-        $_SESSION['errors'] = $this->errors();
+        Session::set("errors", $this->errors());
 
         return $this;
     }

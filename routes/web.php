@@ -1,41 +1,47 @@
+
 <?php
-use SavageDev\Http\Controllers\HomeController;
-
-use SavageDev\Http\Controllers\Auth\AccountController;
-use SavageDev\Http\Controllers\Auth\LoginController;
-use SavageDev\Http\Controllers\Auth\PasswordController;
-use SavageDev\Http\Controllers\Auth\RegisterController;
-
-use SavageDev\Lib\Session;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 use SavageDev\Http\Middleware\AuthMiddleware;
 use SavageDev\Http\Middleware\GuestMiddleware;
+use SavageDev\Lib\Session;
 
-$app->route(["GET"], "[/]", HomeController::class)->setName("home");
+use Slim\App;
+use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
-$app->group("/auth", function() {
-    $this->route(["GET", "POST"], "/profile", AccountController::class)
-        ->add(new AuthMiddleware($this->getContainer()))
-        ->setName("auth.profile");
-    $this->route(["GET", "POST"], "/password", PasswordController::class)
-        ->add(new AuthMiddleware($this->getContainer()))
-        ->setName("auth.password");
+return function (App $app) 
+{
+    $app->get("/", [SavageDev\Http\Controllers\HomeController::class, "index"])->setName("home");
 
-    $this->route(["GET", "POST"], "/login", LoginController::class)
-        ->add(new GuestMiddleware($this->getContainer()))
+    $app->get("/login", [SavageDev\Http\Controllers\Auth\LoginController::class, "get"])
+        ->add(new GuestMiddleware($app->getContainer()))
         ->setName("auth.login");
+    $app->post("/login", [SavageDev\Http\Controllers\Auth\LoginController::class, "post"])
+        ->add(new GuestMiddleware($app->getContainer()));
 
-    $this->route(["GET", "POST"], "/register", RegisterController::class)
-        ->add(new GuestMiddleware($this->getContainer()))
+    $app->get("/register", [SavageDev\Http\Controllers\Auth\RegisterController::class, "get"])
+        ->add(new GuestMiddleware($app->getContainer()))
         ->setName("auth.register");
+    $app->post("/register", [SavageDev\Http\Controllers\Auth\RegisterController::class, "post"])
+        ->add(new GuestMiddleware($app->getContainer()));
 
-    $this->get("/logout", function($req, $res, $args) {
-        if(Session::exists(env("APP_AUTH_ID"))) {
-            Session::destroy(env("APP_AUTH_ID"));
-            $this["flash"]->addMessage("success", "You have been logged out.");
-        }
 
-        return $res->withRedirect($this["router"]->pathFor("home"));
-    })->add(new AuthMiddleware($this->getContainer()))->setName("auth.logout");
-});
+    $app->group("/auth", function (Group $group) use ($app) {
+        $group->get("/profile", [SavageDev\Http\Controllers\Auth\AccountController::class, "get"])->setName("auth.profile");
+        $group->post("/profile", [SavageDev\Http\Controllers\Auth\AccountController::class, "post"]);
+
+        $group->get("/password", [SavageDev\Http\Controllers\Auth\PasswordController::class, "get"])->setName("auth.password");
+        $group->post("/password", [SavageDev\Http\Controllers\Auth\PasswordController::class, "post"]);
+
+        $group->get("/logout", function(Request $request, Response $response) use ($app) {    
+            if(Session::exists(env("APP_AUTH_ID"))) {
+                Session::destroy(env("APP_AUTH_ID"));
+                $app->getContainer()->get("flash")->addMessage("success", "You have been logged out.");
+            }
+    
+            return $response->withHeader("Location", $app->getContainer()->get(\Slim\Interfaces\RouteParserInterface::class)->urlFor("auth.login"));
+        })->setName("auth.logout");
+    })->add(new AuthMiddleware($app->getContainer()));
+};
 

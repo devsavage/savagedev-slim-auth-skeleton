@@ -13,31 +13,31 @@ class ConsoleGeneratorCommand extends Command
 {
     use Generatable;
 
-    protected $command = 'make:command';
+    protected $command = "make:command";
 
-    protected $description = 'Generate console command.';
+    protected $description = "Generate console command.";
 
     public function handle(InputInterface $input, OutputInterface $output)
     {
-        $stub = $this->generateStub('command', [
-            'DummyClass' => $this->argument('name'),
+        $stub = $this->generateStub("command", [
+            "DummyClass" => $this->argument("name"),
         ]);
 
-        $target = __DIR__ . '/../' . $this->argument('name') . '.php';
+        $target = __DIR__ . "/../" . $this->argument("name") . ".php";
 
         if(file_exists($target)) {
-            return $this->error('Command already exists.');
+            return $this->error("Command already exists.");
         }
 
         file_put_contents($target, $stub);
 
-        return $this->info('Console command generated.');
+        return $this->info("Console command generated.");
     }
 
     protected function arguments()
     {
         return [
-            ['name', InputArgument::REQUIRED, 'The name of the command to generate.']
+            ["name", InputArgument::REQUIRED, "The name of the command to generate."]
         ];
     }
 

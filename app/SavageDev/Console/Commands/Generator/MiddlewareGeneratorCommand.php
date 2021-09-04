@@ -13,52 +13,52 @@ class MiddlewareGeneratorCommand extends Command
 {
     use Generatable;
 
-    protected $command = 'make:middleware';
+    protected $command = "make:middleware";
 
-    protected $description = 'Generate some middleware.';
+    protected $description = "Generate some middleware.";
 
     public function handle(InputInterface $input, OutputInterface $output)
     {
-        $middlewareBase = __DIR__ . '/../../../Http/Middleware';
-        $path = $middlewareBase . '/';
-        $namespace = 'SavageDev\\Http\\Middleware';
+        $middlewareBase = __DIR__ . "/../../../Http/Middleware";
+        $path = $middlewareBase . "/";
+        $namespace = "SavageDev\\Http\\Middleware";
 
-        $fileParts = explode('\\', trim($this->argument('name')));
+        $fileParts = explode("\\", trim($this->argument("name")));
 
         $fileName = array_pop($fileParts);
 
-        $cleanPath = implode('/', $fileParts);
+        $cleanPath = implode("/", $fileParts);
 
         if (count($fileParts) >= 1) {
             $path = $path . $cleanPath;
 
-            $namespace = $namespace . '\\' . str_replace('/', '\\', $cleanPath);
+            $namespace = $namespace . "\\" . str_replace("/", "\\", $cleanPath);
 
             if (!is_dir($path)) {
                 mkdir($path, 0777, true);
             }
         }
 
-        $target = $path . $fileName . '.php';
+        $target = $path . $fileName . ".php";
 
         if (file_exists($target)) {
-            return $this->error('Middleware already exists!');
+            return $this->error("Middleware already exists!");
         }
 
-        $stub = $this->generateStub('middleware', [
-            'DummyClass' => $fileName,
-            'DummyNamespace' => $namespace,
+        $stub = $this->generateStub("middleware", [
+            "DummyClass" => $fileName,
+            "DummyNamespace" => $namespace,
         ]);
 
         file_put_contents($target, $stub);
 
-        return $this->info('Middleware generated!');
+        return $this->info("Middleware generated!");
     }
 
     protected function arguments()
     {
         return [
-            ['name', InputArgument::REQUIRED, 'The name of the middleware to generate.']
+            ["name", InputArgument::REQUIRED, "The name of the middleware to generate."]
         ];
     }
 

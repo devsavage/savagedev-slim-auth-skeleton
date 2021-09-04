@@ -5,9 +5,9 @@ use Respect\Validation\Exceptions\ValidationException;
 
 class IsUniqueUsernameException extends ValidationException
 {
-    public static $defaultTemplates = [
+    protected $defaultTemplates = [
         self::MODE_DEFAULT => [
-            self::STANDARD => 'That {{name}} is already taken.',
+            self::STANDARD => "That {{name}} is already taken.",
         ]
     ];
 }

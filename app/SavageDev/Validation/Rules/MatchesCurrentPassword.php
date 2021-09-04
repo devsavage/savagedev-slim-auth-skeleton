@@ -12,7 +12,7 @@ class MatchesCurrentPassword extends AbstractRule
         $this->_auth = $auth;
     }
 
-    public function validate($input)
+    public function validate($input) : bool
     {
         if($this->_auth->check() && password_verify($input, $this->_auth->user()->password)) {
             return true;

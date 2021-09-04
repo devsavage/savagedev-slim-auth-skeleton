@@ -9,9 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DummyClass extends Command
 {
-    protected $command = 'command:name';
+    protected $command = "command:name";
 
-    protected $description = 'Command description.';
+    protected $description = "Command description.";
 
     public function handle(InputInterface $input, OutputInterface $output)
     {

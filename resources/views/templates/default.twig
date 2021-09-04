@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Slim Auth Skeleton</title>
+    <title>Slim 4 Auth Skeleton</title>
+    <link rel="stylesheet" href="{{ asset("css/app.css") }}" />
 </head>
 <body>
     {% include "templates/partials/_alerts.twig" %}
     {% include "templates/partials/_nav.twig" %}
     {% block content %}
     {% endblock %}
+    <script src="{{ asset("js/app.js") }}" type="text/javascript"></script>
 </body>
 </html>

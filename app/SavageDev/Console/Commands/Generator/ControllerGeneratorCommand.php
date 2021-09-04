@@ -13,52 +13,52 @@ class ControllerGeneratorCommand extends Command
 {
     use Generatable;
 
-    protected $command = 'make:controller';
+    protected $command = "make:controller";
 
-    protected $description = 'Generate a controller.';
+    protected $description = "Generate a controller.";
 
     public function handle(InputInterface $input, OutputInterface $output)
     {
-        $controllerBase = __DIR__ . '/../../../Http/Controllers';
-        $path = $controllerBase . '/';
-        $namespace = 'SavageDev\\Http\\Controllers';
+        $controllerBase = __DIR__ . "/../../../Http/Controllers";
+        $path = $controllerBase . "/";
+        $namespace = "SavageDev\\Http\\Controllers";
 
-        $fileParts = explode('\\', trim($this->argument('name')));
+        $fileParts = explode("\\", trim($this->argument("name")));
 
         $fileName = array_pop($fileParts);
 
-        $cleanPath = implode('/', $fileParts);
+        $cleanPath = implode("/", $fileParts);
 
         if (count($fileParts) >= 1) {
             $path = $path . $cleanPath;
 
-            $namespace = $namespace . '\\' . str_replace('/', '\\', $cleanPath);
+            $namespace = $namespace . "\\" . str_replace("/", "\\", $cleanPath);
 
             if (!is_dir($path)) {
                 mkdir($path, 0777, true);
             }
         }
 
-        $target = $path . '/' . $fileName . '.php';
+        $target = $path . "/" . $fileName . ".php";
 
         if (file_exists($target)) {
-            return $this->error('Controller already exists!');
+            return $this->error("Controller already exists!");
         }
 
-        $stub = $this->generateStub('controller', [
-            'DummyClass' => $fileName,
-            'DummyNamespace' => $namespace,
+        $stub = $this->generateStub("controller", [
+            "DummyClass" => $fileName,
+            "DummyNamespace" => $namespace,
         ]);
 
         file_put_contents($target, $stub);
 
-        return $this->info('Controller generated!');
+        return $this->info("Controller generated!");
     }
 
     protected function arguments()
     {
         return [
-            ['name', InputArgument::REQUIRED, 'The name of the controller to generate.']
+            ["name", InputArgument::REQUIRED, "The name of the controller to generate."]
         ];
     }
 

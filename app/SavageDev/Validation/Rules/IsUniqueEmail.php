@@ -12,7 +12,7 @@ class IsUniqueEmail extends AbstractRule
         $this->_auth = $auth;
     }
 
-    public function validate($input)
+    public function validate($input) : bool
     {
         $user = $this->_auth->where("email", $input);
 

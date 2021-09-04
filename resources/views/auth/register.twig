@@ -4,24 +4,24 @@
     <ul>
         <form method="POST">
             <input type="text" name="username" placeholder="Username" value="{{ old.username }}">
-            {% if errors.username %}
-                {{ errors.username.0 }}
+            {% if flash.getMessage("errors").0.username %}
+                {{ flash.getMessage("errors").0.username }}
             {% endif %}
             <input type="text" name="email" placeholder="E-Mail Address" value="{{ old.email }}">
-            {% if errors.email %}
-                {{ errors.email.0 }}
+            {% if flash.getMessage("errors").0.email %}
+                {{ flash.getMessage("errors").0.email }}
             {% endif %}
             <input type="password" name="password" placeholder="Password">
-            {% if errors.password %}
-                {{ errors.password.0 }}
+            {% if flash.getMessage("errors").0.password %}
+                {{ flash.getMessage("errors").0.password }}
             {% endif %}
             <input type="password" name="confirm_password" placeholder="Confirm Password">
-            {% if errors.confirm_password %}
-                {{ errors.confirm_password.0 }}
+            {% if flash.getMessage("errors").0.confirm_password %}
+                {{ flash.getMessage("errors").0.confirm_password }}
             {% endif %}
             {{ csrf.field | raw }}
             <button type="submit">Register</button>
         </form>
-       Already have an account? <a href="{{ path_for("auth.login") }}">Login</a>
+       Already have an account? <a href="{{ url_for("auth.login") }}">Login</a>
     </ul>
 {% endblock %}

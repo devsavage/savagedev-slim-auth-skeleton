@@ -1,18 +1,35 @@
 <?php
 namespace SavageDev\Http\Middleware;
 
-use SavageDev\Http\Middleware\Middleware;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Slim\Interfaces\RouteParserInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use SavageDev\Lib\Session;
+use Slim\Psr7\Response;
 
-class AuthMiddleware extends Middleware
+class AuthMiddleware implements MiddlewareInterface
 {
-    public function __invoke($request, $response, $next)
+    protected $_container;
+    protected $_router;
+    
+    public function __construct(ContainerInterface $container)
     {
-        if(!$this->_container->auth->check()) {
-            $this->flash("warning", "You must be signed in to access that page.");
-            return $this->redirect($response, "auth.login");
+        $this->_container = $container;
+        $this->_router = $container->get(RouteParserInterface::class);
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        if(!$this->_container->get("auth")->check()) {
+            $response = new Response();
+
+            $this->_container->get("flash")->addMessage("warning", "You must be logged in before viewing that page.");
+            return $response->withHeader("Location", full_uri($this->_router->urlFor("auth.login")));
         }
-        
-        $response = $next($request, $response);
-        return $response;
+
+        return $handler->handle($request);
     }
 }
