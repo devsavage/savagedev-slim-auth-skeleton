@@ -25,9 +25,9 @@ This skeleton app structures a basic authentication system for a Slim 4 applicat
  2. Open your console and run: "composer install"
  3. To add styling support: run "npm install" or "yarn install"
  4. Import the sql file into your database
- 5. Edit the .env-example file and rename it to .env
- 6. Point to your app directory's public folder within your web configuration
- 7. View website in your browser
+ 5. Edit the .env-example file, including database connection and rename it to .env (Change APP_ENV to "production" before deployment)
+ 7. Point to your app directory's public folder within your web configuration
+ 8. View website in your browser
 
 ## Help and Feedback
 For any help and/or feedback, send me an email to the public e-mail shown on GitHub.
