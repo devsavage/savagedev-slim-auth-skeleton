@@ -37,11 +37,11 @@ class Controller
 
     public function param($request, $name)
     {
-        if($request->getMethod() == "GET") {
-            return $request->getQueryParams()[$name];
+        if($request->getMethod() == "GET" || $urlParamsOnly) {
+            return isset($request->getQueryParams()[$name]) ? $request->getQueryParams()[$name] : null;
         }
         
-        return $request->getParsedBody()[$name];
+        return isset($request->getParsedBody()[$name]) ? $request->getParsedBody()[$name] : null;
     }
 
     protected function render(Response $response, string $template, array $params = []): Response
