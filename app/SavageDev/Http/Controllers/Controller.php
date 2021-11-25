@@ -35,13 +35,17 @@ class Controller
         return $this->flash->addMessage($type, $message);
     }
 
-    public function param($request, $name)
+    public function param($request, $name, $urlParamsOnly = false)
     {
-        if($request->getMethod() == "GET" || $urlParamsOnly) {
-            return isset($request->getQueryParams()[$name]) ? $request->getQueryParams()[$name] : null;
+        if($request->getMethod() == "GET" && $request->getQueryParams() || $urlParamsOnly) {
+            return array_key_exists($name, $request->getQueryParams()) ? $request->getQueryParams()[$name] : null;
+        }
+
+        if($request->getParsedBody()) {
+            return array_key_exists($name, $request->getParsedBody()) ? $request->getParsedBody()[$name] : null;
         }
         
-        return isset($request->getParsedBody()[$name]) ? $request->getParsedBody()[$name] : null;
+        return null;
     }
 
     protected function render(Response $response, string $template, array $params = []): Response
