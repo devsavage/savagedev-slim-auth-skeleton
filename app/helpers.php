@@ -12,3 +12,9 @@ if(!function_exists("env"))
         return $value;
     }
 }
+
+if (!function_exists('full_uri')) {
+    function full_uri($path) {
+        return env("APP_URL") . $path;
+    }
+}
